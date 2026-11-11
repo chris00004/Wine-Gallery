@@ -1,11 +1,11 @@
 extends Node
 class_name MouseManager
 
-@export var cameraManager : CameraManager;
+@export var galleryManager : GalleryManager;
 @export var inputManager : InputManager;
+@export var camera3d : Camera3D;
 @export var mouseSprite : AnimatedSprite2D;
 
-var camera3D : Camera3D;
 var prevHoveredNode : Node;
 var currentHoveredNode : Node;
 var mousePosition : Vector2;
@@ -14,12 +14,9 @@ var spritePosition : Vector2;
 
 
 func init() -> void :
-	if ( !cameraManager ) :
-		print ( "mouse mgrs's ref to camera mgr is null" );
+	
+	if ( !galleryManager ) :
 		return;
-		
-	#Input.mouse_mode = Input.MOUSE_MODE_HIDDEN;
-	camera3D = cameraManager.camera3D;
 		
 func update( delta : float ) -> void :
 	
@@ -70,12 +67,12 @@ func update( delta : float ) -> void :
 		
 
 func get_mouse_hovered_node() -> Node:
-	if ( !camera3D ) :
-		camera3D = cameraManager.camera3D;
-		print("assigned cam3d to mouse mgr");
+	
+	if ( !camera3d ) :
 		return;
-	var rayOrigin: Vector3 = camera3D.project_ray_origin( mousePosition );
-	var rayDirection: Vector3 = camera3D.project_ray_normal( mousePosition );
+		
+	var rayOrigin: Vector3 = camera3d.project_ray_origin( mousePosition );
+	var rayDirection: Vector3 = camera3d.project_ray_normal( mousePosition );
 	
 	var query: PhysicsRayQueryParameters3D = \
 		PhysicsRayQueryParameters3D.create( rayOrigin, rayOrigin + rayDirection * 1000.0 );
@@ -85,7 +82,7 @@ func get_mouse_hovered_node() -> Node:
 	query.collide_with_bodies = false;
 	
 	var result: Dictionary = \
-		camera3D.get_world_3d().direct_space_state.intersect_ray( query );
+		camera3d.get_world_3d().direct_space_state.intersect_ray( query );
 	
 	if ( result.is_empty() ) :
 		return null;
