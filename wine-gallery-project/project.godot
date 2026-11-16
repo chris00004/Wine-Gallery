@@ -11,17 +11,22 @@ config_version=5
 [application]
 
 config/name="Wine_Gallery_Project"
+run/main_scene="uid://c0hjnht0dwa84"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=1
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
 [physics]
 
 3d/physics_engine="Jolt Physics"
+common/physics_interpolation=true
 
 [rendering]
 

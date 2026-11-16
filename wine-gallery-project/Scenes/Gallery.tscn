@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://c0hjnht0dwa84"]
+
+[ext_resource type="Script" uid="uid://dcw76jqp7xae5" path="res://Scripts/Managers/gallery-manager.gd" id="1_0m02d"]
+[ext_resource type="PackedScene" uid="uid://ta4307f8cxqh" path="res://Scenes/Gallery_UI.tscn" id="2_pylep"]
+[ext_resource type="PackedScene" uid="uid://m3m2ln3mhmwy" path="res://Scenes/Wine_Bottle.tscn" id="2_q2xtv"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0m02d"]
+sky_top_color = Color(0, 0, 0, 1)
+sky_horizon_color = Color(0, 0, 0, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Sky" id="Sky_pylep"]
+sky_material = SubResource("ProceduralSkyMaterial_0m02d")
+
+[sub_resource type="Environment" id="Environment_q2xtv"]
+background_mode = 2
+sky = SubResource("Sky_pylep")
+glow_enabled = true
+
+[node name="Gallery" type="Node3D" unique_id=586914440 node_paths=PackedStringArray("camera3d")]
+script = ExtResource("1_0m02d")
+camera3d = NodePath("Camera3D")
+
+[node name="WineBottle" parent="." unique_id=1225881532 instance=ExtResource("2_q2xtv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.63675296, -1.7486616)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1670014956]
+environment = SubResource("Environment_q2xtv")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1230117555]
+current = true
+
+[node name="Node3D" type="Node3D" parent="Camera3D" unique_id=303719719]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.115949e-08, -1.6279395)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Camera3D" unique_id=1080256138]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.6832586e-10, 0.019864798)
+spot_angle = 73.79
+
+[node name="GalleryUi" parent="." unique_id=881974233 instance=ExtResource("2_pylep")]

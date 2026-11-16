@@ -1,0 +1,8 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cbs6qlsvbe33e"]
+
+[ext_resource type="Shader" uid="uid://isyuhgys0knd" path="res://Shaders/shader-glass.gdshader" id="1_pjyv0"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_pjyv0")
+shader_parameter/color = Color(0, 0.3137255, 0, 1)

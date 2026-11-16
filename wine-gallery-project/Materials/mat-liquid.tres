@@ -1,0 +1,13 @@
+[gd_resource type="ShaderMaterial" format=3 uid="uid://y6p88e5th7bh"]
+
+[ext_resource type="Shader" uid="uid://b2myjngohd06b" path="res://Shaders/shader-liquid.gdshader" id="1_10xes"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_10xes")
+shader_parameter/_FillColor = Color(0.82191056, 2.623126e-06, 7.70092e-07, 1)
+shader_parameter/_SurfaceColor = Color(0.6224789, 0, 0.29260376, 1)
+shader_parameter/_FillLevel = 0.0
+shader_parameter/_MaxHeight = 2.0
+shader_parameter/_AngleZ = 0.0
+shader_parameter/_AngleX = 0.0

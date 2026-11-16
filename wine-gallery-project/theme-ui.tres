@@ -53,6 +53,11 @@ bg_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bdcpw"]
 bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_aseb5"]
 color = Color(1, 1, 1, 1)
@@ -61,7 +66,7 @@ color = Color(1, 1, 1, 1)
 
 [resource]
 default_font = SubResource("SystemFont_aseb5")
-default_font_size = 12
+default_font_size = 14
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_focus_color = Color(0.8334365, 0.5645077, 3.85046e-07, 1)
 Button/colors/font_hover_color = Color(0, 0, 0, 1)

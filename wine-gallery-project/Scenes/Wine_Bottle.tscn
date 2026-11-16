@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://m3m2ln3mhmwy"]
+
+[ext_resource type="ArrayMesh" uid="uid://cbjh54hjuobxi" path="res://Assets/Meshes/Cylinder_001.res" id="1_6432n"]
+[ext_resource type="Material" uid="uid://cbs6qlsvbe33e" path="res://Materials/mat-glass-bottle.tres" id="2_6432n"]
+
+[node name="WineBottle" type="Node3D" unique_id=1225881532]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1014277355]
+transform = Transform3D(20, 0, 0, 0, -8.742278e-07, 20, 0, -20, -8.742278e-07, 0, -0.009032361, 0)
+mesh = ExtResource("1_6432n")
+surface_material_override/0 = ExtResource("2_6432n")
