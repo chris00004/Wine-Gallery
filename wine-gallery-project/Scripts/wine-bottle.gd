@@ -1,10 +1,24 @@
 extends HoverableObject
-class_name Snack
+class_name WineBottle
 
 enum BottleState {
 	IDLE,
 	INSPECTED,
 }
+
+var information : Array[ String ] = [
+	
+		"Producer/Wine : NULL",
+		"Grapes : NULL",
+		"Country : NULL",
+		"Region : NULL",
+		"Vintage : NULL",
+		"Price : NULL",
+		"Alc. By Vol. : NULL"
+	];
+	
+var producerInformation : String = "";
+
 var currentState : BottleState = BottleState.IDLE;
 
 @export var galleryManager : GalleryManager;
