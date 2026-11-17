@@ -37,12 +37,28 @@ content_margin_right = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(1, 1, 1, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tp2jp"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_s87sj"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lfxu0"]
+bg_color = Color(0, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 1, 1, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4qdu"]
 content_margin_left = 5.0
@@ -75,6 +91,10 @@ Button/styles/focus = SubResource("StyleBoxFlat_aseb5")
 Button/styles/hover = SubResource("StyleBoxFlat_2fab4")
 Button/styles/normal = SubResource("StyleBoxFlat_0wr0n")
 Button/styles/pressed = SubResource("StyleBoxFlat_kynni")
+LinkButton/colors/font_color = Color(1, 0, 0, 1)
+LinkButton/colors/font_hover_color = Color(1, 1, 1, 1)
+LinkButton/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+LinkButton/styles/focus = SubResource("StyleBoxFlat_tp2jp")
 OptionButton/colors/font_color = Color(1, 1, 1, 1)
 OptionButton/colors/font_focus_color = Color(0, 0, 0, 1)
 OptionButton/colors/font_hover_color = Color(0, 0, 0, 1)
@@ -85,6 +105,7 @@ OptionButton/styles/hover = SubResource("StyleBoxFlat_2fab4")
 OptionButton/styles/hover_pressed = SubResource("StyleBoxFlat_2fab4")
 OptionButton/styles/normal = SubResource("StyleBoxFlat_0wr0n")
 OptionButton/styles/pressed = SubResource("StyleBoxFlat_s87sj")
+Panel/styles/panel = SubResource("StyleBoxFlat_lfxu0")
 PopupMenu/colors/font_color = Color(1, 1, 1, 1)
 PopupMenu/colors/font_hover_color = Color(0, 0, 0, 1)
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_p4qdu")

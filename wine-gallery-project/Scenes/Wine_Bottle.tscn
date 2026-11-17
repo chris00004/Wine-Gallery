@@ -1,11 +1,35 @@
 [gd_scene format=3 uid="uid://m3m2ln3mhmwy"]
 
-[ext_resource type="ArrayMesh" uid="uid://cbjh54hjuobxi" path="res://Assets/Meshes/Cylinder_001.res" id="1_6432n"]
+[ext_resource type="Script" uid="uid://qrb6dhun5n1v" path="res://Scripts/wine-bottle.gd" id="1_qny57"]
 [ext_resource type="Material" uid="uid://cbs6qlsvbe33e" path="res://Materials/mat-glass-bottle.tres" id="2_6432n"]
+[ext_resource type="ArrayMesh" uid="uid://dillp3t7jm1" path="res://Assets/Meshes/WineBottleGLB_Cylinder_001.res" id="2_qny57"]
+[ext_resource type="ArrayMesh" uid="uid://cki6vmoxjmq4q" path="res://Assets/Meshes/Cylinder.res" id="3_eet3j"]
 
-[node name="WineBottle" type="Node3D" unique_id=1225881532]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6432n"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+metallic_specular = 0.0
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1014277355]
-transform = Transform3D(20, 0, 0, 0, -8.742278e-07, 20, 0, -20, -8.742278e-07, 0, -0.009032361, 0)
-mesh = ExtResource("1_6432n")
+[sub_resource type="SphereShape3D" id="SphereShape3D_qny57"]
+radius = 1.0240791
+
+[node name="WineBottle" type="Node3D" unique_id=1225881532 node_paths=PackedStringArray("mesh")]
+script = ExtResource("1_qny57")
+mesh = NodePath("Bottle_Mesh")
+
+[node name="Bottle_Mesh" type="MeshInstance3D" parent="." unique_id=1014277355]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, -0.040885866, 0)
+mesh = ExtResource("2_qny57")
 surface_material_override/0 = ExtResource("2_6432n")
+
+[node name="Label_Mesh" type="MeshInstance3D" parent="Bottle_Mesh" unique_id=1880725858]
+transform = Transform3D(100, 0, 0, 0, -4.3711393e-06, 100, 0, -100, -4.3711393e-06, 0, 0, 0)
+mesh = ExtResource("3_eet3j")
+surface_material_override/0 = SubResource("StandardMaterial3D_6432n")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1255559068]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1955255862]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5483726, 0)
+shape = SubResource("SphereShape3D_qny57")

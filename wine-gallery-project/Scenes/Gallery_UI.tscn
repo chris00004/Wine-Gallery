@@ -1,29 +1,50 @@
 [gd_scene format=3 uid="uid://ta4307f8cxqh"]
 
 [ext_resource type="Theme" uid="uid://c27x448cr16bd" path="res://theme-ui.tres" id="1_5f33e"]
+[ext_resource type="Script" uid="uid://q1llnek7ng5c" path="res://Scripts/Managers/ui-manager.gd" id="1_c4u51"]
 [ext_resource type="Texture2D" uid="uid://cmmjbo46d1v42" path="res://icon.svg" id="2_tp2jp"]
 
-[node name="GalleryUi" type="Control" unique_id=881974233]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tp2jp"]
+bg_color = Color(0, 0, 0, 0)
+border_color = Color(1, 1, 1, 1)
+
+[node name="GalleryUi" type="Control" unique_id=881974233 node_paths=PackedStringArray("regionSelection", "producerlabel", "informationlabel", "cursorHSizePanel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_c4u51")
+regionSelection = NodePath("HBoxContainer/Control/OptionButton")
+producerlabel = NodePath("HBoxContainer2/Control/Label")
+informationlabel = NodePath("HBoxContainer2/Control/Label2")
+cursorHSizePanel = NodePath("CenterContainer/CursorHSizePanel")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1934882759]
+layout_mode = 0
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 248.0
+offset_bottom = 1713.0
+mouse_filter = 1
+color = Color(0, 0, 0, 1)
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=150904351]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+offset_right = 246.0
+offset_bottom = 1722.0
 theme_override_constants/separation = 264
 
 [node name="Control" type="Control" parent="HBoxContainer" unique_id=824273737]
 layout_mode = 2
+mouse_filter = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Control" unique_id=1285658932]
 layout_mode = 0
 offset_top = 33.0
-offset_right = 290.0
+offset_right = 247.0
 offset_bottom = 99.0
 theme_override_constants/separation = 83
 alignment = 1
@@ -33,13 +54,13 @@ layout_mode = 2
 
 [node name="Icon" type="Sprite2D" parent="HBoxContainer/Control/HBoxContainer/Control" unique_id=1247836920]
 position = Vector2(32, 31)
-scale = Vector2(0.65877163, 0.65877163)
+scale = Vector2(0.48122606, 0.48122606)
 texture = ExtResource("2_tp2jp")
 
 [node name="Label" type="Label" parent="HBoxContainer/Control/HBoxContainer" unique_id=1290885638]
 layout_mode = 2
 theme_override_constants/line_spacing = -2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 20
 text = "GODOT 
 Wine Gallery"
 
@@ -47,7 +68,7 @@ Wine Gallery"
 layout_mode = 0
 offset_left = 22.0
 offset_top = 122.0
-offset_right = 268.0
+offset_right = 221.0
 offset_bottom = 156.0
 tooltip_text = "Select a region to view select wines made there."
 theme = ExtResource("1_5f33e")
@@ -58,13 +79,91 @@ popup/item_0/id = 0
 popup/item_1/text = "NYS"
 popup/item_1/id = 1
 
-[node name="Control2" type="Control" parent="HBoxContainer" unique_id=810122953]
+[node name="Separator" type="ColorRect" parent="." unique_id=715910344]
+layout_mode = 0
+offset_left = 248.0
+offset_top = -1519.0
+offset_right = 249.0
+offset_bottom = 2231.0
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1434008880]
+layout_mode = 0
+offset_right = 1282.0
+offset_bottom = 800.0
+mouse_filter = 2
+mouse_behavior_recursive = 1
+
+[node name="CursorHSizePanel" type="Panel" parent="CenterContainer" unique_id=701706812]
+custom_minimum_size = Vector2(300, 800)
+layout_mode = 2
+mouse_default_cursor_shape = 10
+theme = ExtResource("1_5f33e")
+theme_override_styles/panel = SubResource("StyleBoxFlat_tp2jp")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=688683561]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -444.0
+offset_top = 23.0
+offset_right = -323.0
+offset_bottom = 427.0
+grow_horizontal = 0
+theme_override_constants/separation = 83
+alignment = 2
+
+[node name="Control" type="Control" parent="HBoxContainer2" unique_id=236007548]
 layout_mode = 2
 
-[node name="ColorRect" type="ColorRect" parent="HBoxContainer/Control2" unique_id=715910344]
+[node name="Panel" type="Panel" parent="HBoxContainer2/Control" unique_id=1571696831]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 17.0
-offset_right = 66.0
-offset_bottom = 57.0
-scale = Vector2(0.040001214, 26.12)
+offset_left = -12.0
+offset_right = 301.0
+offset_bottom = 45.0
+theme = ExtResource("1_5f33e")
+
+[node name="Panel2" type="Panel" parent="HBoxContainer2/Control" unique_id=1999325894]
+layout_mode = 0
+offset_left = -12.0
+offset_top = 65.0
+offset_right = 301.0
+offset_bottom = 268.0
+theme = ExtResource("1_5f33e")
+
+[node name="Label" type="Label" parent="HBoxContainer2/Control" unique_id=1213211523]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 9.0
+offset_right = 297.0
+offset_bottom = 270.0
+theme_override_constants/line_spacing = 2
+theme_override_font_sizes/font_size = 16
+text = "Producer/Wine : Weis Vineyards
+"
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="HBoxContainer2/Control" unique_id=970767750]
+layout_mode = 0
+offset_top = 74.0
+offset_right = 296.0
+offset_bottom = 335.0
+theme_override_constants/line_spacing = 2
+theme_override_font_sizes/font_size = 16
+text = "Grapes : 100% Seyval Blanc (Hybrid)
+Country : United States of America
+Region : NYS Appellation, Keuka Lake
+Vintage : 2025
+Price : $20
+Alc. By Vol. : 12%"
+autowrap_mode = 3
+
+[node name="LinkButton" type="LinkButton" parent="HBoxContainer2/Control" unique_id=1384890463]
+layout_mode = 0
+offset_left = 135.0
+offset_top = 236.0
+offset_right = 310.0
+offset_bottom = 276.0
+theme = ExtResource("1_5f33e")
+text = "Visit Producer Website"
+uri = "https://www.weisvineyards.com/product/seyval-blanc-2025"

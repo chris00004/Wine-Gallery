@@ -1,8 +1,11 @@
 [gd_resource type="ShaderMaterial" format=3 uid="uid://cbs6qlsvbe33e"]
 
 [ext_resource type="Shader" uid="uid://isyuhgys0knd" path="res://Shaders/shader-glass.gdshader" id="1_pjyv0"]
+[ext_resource type="Material" uid="uid://bdwd0pqrfw1et" path="res://Materials/mat-outline.tres" id="1_x3mvx"]
 
 [resource]
+resource_local_to_scene = true
 render_priority = 0
+next_pass = ExtResource("1_x3mvx")
 shader = ExtResource("1_pjyv0")
 shader_parameter/color = Color(0, 0.3137255, 0, 1)

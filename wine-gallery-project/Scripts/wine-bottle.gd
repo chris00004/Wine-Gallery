@@ -1,11 +1,6 @@
 extends HoverableObject
 class_name WineBottle
 
-enum BottleState {
-	IDLE,
-	INSPECTED,
-}
-
 var information : Array[ String ] = [
 	
 		"Producer/Wine : NULL",
@@ -19,40 +14,39 @@ var information : Array[ String ] = [
 	
 var producerInformation : String = "";
 
-var currentState : BottleState = BottleState.IDLE;
+var isFocused : bool = false;
+var initialLocalRotationX : float;
 
 @export var galleryManager : GalleryManager;
-@export var camera3D : Camera3D;
-@export var idleNode : Node3D;
-@export var focusedNode : Node3D;
 
 var rotationAxis : Vector3 = Vector3.UP;
 var dragStrength : float = 0.05;
 var deceleration : float = 3.0;
 var rotationSpeed : float = 0.0;
 var moveSpeed : float = 8.0;
-var moveSpeedPlus : float = 0.0;
 
 var isLeftMouseDown : bool = false;
 var isInDraggableRange : bool = false;
+var followPoint : Vector3;
 
 
 func init() -> void :
 	
 	super();
-	visible = false;
-	isActive = false;
+	visible = true;
+	isActive = true;
+	initialLocalRotationX = rotation.x;
 	
 func update( delta : float ) -> void :
 	
 	super( delta );
-	process_states( delta )
+	process_states( delta );
 	
 			
 # Get Mouse Input For Dragging
 func _input( event ) :
 	
-	if ( currentState != BottleState.INSPECTED || !isInDraggableRange ) :
+	if ( !isFocused || !isInDraggableRange ) :
 		return;
 		
 	# Mouse Held Down
@@ -68,35 +62,31 @@ func _input( event ) :
 	
 func process_states( delta : float ) -> void :
 	
-	match currentState :
+	if ( !isActive || !followPoint ) :
+		return;
 		
-		# Move & Rotate Towards Snack Box
-		BottleState.IDLE :
-			
-			moveSpeedPlus = 0;
-			isActive = false;
-			global_position = global_position.lerp( idleNode.global_position, moveSpeed * delta );
-		
-		# Move Towards Camera Object Focus Point & Rotate Towards Camera Position
-		BottleState.INSPECTED :
-			
-			isActive = false;
-			moveSpeedPlus = 0;
-			isInDraggableRange = global_position.distance_to( focusedNode.global_position ) <= 0.001;
-			
-			# If Far From Camera, Move & Rotate In
-			if ( !isInDraggableRange ) :
-				face_toward_camera( delta );
-				global_position = global_position.lerp( focusedNode.global_position, moveSpeed * delta );
-			
-			# If Close Enough, Stop & Allow Mouse Drag Rotation
-			else :
-				
-				if ( abs( rotationSpeed ) > 0.0001 ) :
-					rotate( rotationAxis, rotationSpeed * delta );
-					rotationSpeed = lerp( rotationSpeed, 0.0, deceleration * delta );
-				else:
-					rotationSpeed = 0.0;
+	# Move & Rotate Towards Center Point
+	if ( !isFocused ) :
+		rotation.x = lerp( rotation.x, initialLocalRotationX, moveSpeed * delta );
+		global_position = global_position.lerp( followPoint, moveSpeed * delta );
+		global_rotation.y += 1.5 * delta;
+		rotationSpeed = 0; # -> Refers To Mouse Drag Rotation
+	
+	# Move Towards Camera Object Focus Point & Rotate Towards Camera Position
+	else :
+		rotation.x = lerp( rotation.x, 0.0, moveSpeed * delta );
+		isInDraggableRange = global_position.distance_to( galleryManager.focusedNode.global_position ) <= 0.001;
+		# If Far From Camera, Move & Rotate In
+		if ( !isInDraggableRange ) :
+			face_toward_camera( delta );
+			global_position = global_position.lerp( galleryManager.focusedNode.global_position, moveSpeed * delta );
+		# If Close Enough, Stop & Allow Mouse Drag Rotation
+		else :
+			if ( abs( rotationSpeed ) > 0.0001 ) :
+				rotate( rotationAxis, rotationSpeed * delta );
+				rotationSpeed = lerp( rotationSpeed, 0.0, deceleration * delta );
+			else:
+				rotationSpeed = 0.0;
 			
 # Update Where Mead Mesh Is Facing Toward
 func face_toward_camera( delta: float ) -> void:
@@ -108,7 +98,7 @@ func face_toward_camera( delta: float ) -> void:
 	var lookAtPoint : Vector3;
 	var targetTransform: Transform3D; 
 	
-	lookAtPoint = camera3D.global_position;
+	lookAtPoint = galleryManager.camera3d.global_position + Vector3( 0, -0.55, 0 );
 		
 	targetTransform = mesh.global_transform.looking_at( lookAtPoint, Vector3.UP );
 		
@@ -122,4 +112,7 @@ func face_toward_camera( delta: float ) -> void:
 		rotationSpeedFacing * delta );
 	
 	mesh.global_rotation = nextRotation.get_euler();
+	
+func set_new_position_node( node : Node3D ) -> void :
+	followPoint = node.global_position;
 	

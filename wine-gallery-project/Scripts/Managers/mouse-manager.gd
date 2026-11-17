@@ -2,7 +2,6 @@ extends Node
 class_name MouseManager
 
 @export var galleryManager : GalleryManager;
-@export var inputManager : InputManager;
 @export var camera3d : Camera3D;
 @export var mouseSprite : AnimatedSprite2D;
 
@@ -10,7 +9,6 @@ var prevHoveredNode : Node;
 var currentHoveredNode : Node;
 var mousePosition : Vector2;
 var spritePosition : Vector2;
-
 
 
 func init() -> void :
@@ -22,14 +20,8 @@ func update( delta : float ) -> void :
 	
 	mousePosition = get_viewport().get_mouse_position();
 	
-	spritePosition = Vector2( mousePosition.x + 20, mousePosition.y + 20 );
-	mouseSprite.global_position = spritePosition;
-	
-	if ( inputManager.actionLeftClick.isActive) :
-		if ( mouseSprite.frame >= 3 ) : 
-			mouseSprite.stop();
-		mouseSprite.play();
-		inputManager.reset_buffer( InputManager.InputID.ACTION_LEFT_CLICK );
+	#spritePosition = Vector2( mousePosition.x + 20, mousePosition.y + 20 );
+	#mouseSprite.global_position = spritePosition;
 	
 	# Reset Current Hovered Node
 	currentHoveredNode = null;

@@ -1,41 +1,109 @@
 [gd_scene format=3 uid="uid://c0hjnht0dwa84"]
 
 [ext_resource type="Script" uid="uid://dcw76jqp7xae5" path="res://Scripts/Managers/gallery-manager.gd" id="1_0m02d"]
+[ext_resource type="Script" uid="uid://cxsiwdew7t1j1" path="res://Scripts/Managers/mouse-manager.gd" id="2_1qmsb"]
 [ext_resource type="PackedScene" uid="uid://ta4307f8cxqh" path="res://Scenes/Gallery_UI.tscn" id="2_pylep"]
 [ext_resource type="PackedScene" uid="uid://m3m2ln3mhmwy" path="res://Scenes/Wine_Bottle.tscn" id="2_q2xtv"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0m02d"]
-sky_top_color = Color(0, 0, 0, 1)
-sky_horizon_color = Color(0, 0, 0, 1)
-ground_bottom_color = Color(0, 0, 0, 1)
-ground_horizon_color = Color(0, 0, 0, 1)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q2xtv"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 
-[sub_resource type="Sky" id="Sky_pylep"]
-sky_material = SubResource("ProceduralSkyMaterial_0m02d")
+[sub_resource type="Sky" id="Sky_1qmsb"]
+sky_material = SubResource("ProceduralSkyMaterial_q2xtv")
 
-[sub_resource type="Environment" id="Environment_q2xtv"]
+[sub_resource type="Environment" id="Environment_jb8ey"]
 background_mode = 2
-sky = SubResource("Sky_pylep")
+sky = SubResource("Sky_1qmsb")
 glow_enabled = true
 
-[node name="Gallery" type="Node3D" unique_id=586914440 node_paths=PackedStringArray("camera3d")]
+[sub_resource type="SphereMesh" id="SphereMesh_lfxu0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r6c0r"]
+shading_mode = 0
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_lfxu0"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hjb8m"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[node name="Gallery" type="Node3D" unique_id=586914440 node_paths=PackedStringArray("camera3d", "mouseManager", "uiManager", "focusedNode", "middleNode", "sideNodeLeft", "sideNodeRight", "nysWines")]
 script = ExtResource("1_0m02d")
 camera3d = NodePath("Camera3D")
+mouseManager = NodePath("Mouse_Manager")
+uiManager = NodePath("GalleryUi")
+focusedNode = NodePath("Camera3D/NodeFocused")
+middleNode = NodePath("Camera3D/NodeCenter")
+sideNodeLeft = NodePath("Camera3D/NodeLeft")
+sideNodeRight = NodePath("Camera3D/NodeRight")
+nysWines = [NodePath("NYS_Wines/WineBottle"), NodePath("NYS_Wines/WineBottle2"), NodePath("NYS_Wines/WineBottle3"), NodePath("NYS_Wines/WineBottle4")]
 
-[node name="WineBottle" parent="." unique_id=1225881532 instance=ExtResource("2_q2xtv")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.63675296, -1.7486616)
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1209063977]
+environment = SubResource("Environment_jb8ey")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1670014956]
-environment = SubResource("Environment_q2xtv")
+[node name="Mouse_Manager" type="Node" parent="." unique_id=578726518 node_paths=PackedStringArray("galleryManager", "camera3d")]
+script = ExtResource("2_1qmsb")
+galleryManager = NodePath("..")
+camera3d = NodePath("../Camera3D")
+
+[node name="GalleryUi" parent="." unique_id=881974233 instance=ExtResource("2_pylep")]
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1230117555]
 current = true
 
-[node name="Node3D" type="Node3D" parent="Camera3D" unique_id=303719719]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.115949e-08, -1.6279395)
+[node name="NodeFocused" type="Node3D" parent="Camera3D" unique_id=303719719]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5371999, -1.2714632)
 
-[node name="SpotLight3D" type="SpotLight3D" parent="Camera3D" unique_id=1080256138]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8.6832586e-10, 0.019864798)
-spot_angle = 73.79
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D/NodeFocused" unique_id=779410035]
+transform = Transform3D(0.105, 0, 0, 0, 0.105, 0, 0, 0, 0.105, 0, 0, 0)
+mesh = SubResource("SphereMesh_lfxu0")
+surface_material_override/0 = SubResource("StandardMaterial3D_r6c0r")
 
-[node name="GalleryUi" parent="." unique_id=881974233 instance=ExtResource("2_pylep")]
+[node name="NodeCenter" type="Node3D" parent="Camera3D" unique_id=1493134569]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.30308497, -3.7590907)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D/NodeCenter" unique_id=154847768]
+transform = Transform3D(0.105, 0, 0, 0, 0.105, 0, 0, 0, 0.105, 0, 0, 0)
+mesh = SubResource("SphereMesh_lfxu0")
+surface_material_override/0 = SubResource("StandardMaterial3D_r6c0r")
+
+[node name="NodeLeft" type="Node3D" parent="Camera3D" unique_id=1022339593]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, -0.30308497, -3.7590907)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D/NodeLeft" unique_id=1739571040]
+transform = Transform3D(0.105, 0, 0, 0, 0.105, 0, 0, 0, 0.105, 0, 0, 0)
+mesh = SubResource("SphereMesh_lfxu0")
+surface_material_override/0 = SubResource("StandardMaterial3D_r6c0r")
+
+[node name="NodeRight" type="Node3D" parent="Camera3D" unique_id=1804308157]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, -0.30308497, -3.7590907)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Camera3D/NodeRight" unique_id=34152612]
+transform = Transform3D(0.105, 0, 0, 0, 0.105, 0, 0, 0, 0.105, 0, 0, 0)
+mesh = SubResource("SphereMesh_lfxu0")
+surface_material_override/0 = SubResource("StandardMaterial3D_r6c0r")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1107471654]
+transform = Transform3D(42.278183, 0, 0, 0, -4.3711395e-08, -17.908266, 0, 1.0000002, -7.827951e-07, 0, 0, -6.494814)
+mesh = SubResource("PlaneMesh_lfxu0")
+surface_material_override/0 = SubResource("StandardMaterial3D_hjb8m")
+
+[node name="NYS_Wines" type="Node3D" parent="." unique_id=1029691970]
+
+[node name="WineBottle" parent="NYS_Wines" unique_id=1225881532 node_paths=PackedStringArray("galleryManager") instance=ExtResource("2_q2xtv")]
+transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.50000006, 0, -0.50000006, 0.86602545, -4.1808357, -0.63675296, 4.769443)
+galleryManager = NodePath("../..")
+
+[node name="WineBottle2" parent="NYS_Wines" unique_id=453911755 node_paths=PackedStringArray("galleryManager") instance=ExtResource("2_q2xtv")]
+transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.50000006, 0, -0.50000006, 0.86602545, -1.1416671, -0.63675296, 4.769443)
+galleryManager = NodePath("../..")
+
+[node name="WineBottle3" parent="NYS_Wines" unique_id=991216667 node_paths=PackedStringArray("galleryManager") instance=ExtResource("2_q2xtv")]
+transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.50000006, 0, -0.50000006, 0.86602545, 1.5260477, -0.63675296, 4.769443)
+galleryManager = NodePath("../..")
+
+[node name="WineBottle4" parent="NYS_Wines" unique_id=783349373 node_paths=PackedStringArray("galleryManager") instance=ExtResource("2_q2xtv")]
+transform = Transform3D(1, 0, 0, 0, 0.86602545, 0.50000006, 0, -0.50000006, 0.86602545, 4.6859303, -0.63675296, 4.769443)
+galleryManager = NodePath("../..")
