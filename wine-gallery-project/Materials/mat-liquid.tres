@@ -3,11 +3,12 @@
 [ext_resource type="Shader" uid="uid://b2myjngohd06b" path="res://Shaders/shader-liquid.gdshader" id="1_10xes"]
 
 [resource]
+resource_local_to_scene = true
 render_priority = 0
 shader = ExtResource("1_10xes")
-shader_parameter/_FillColor = Color(0.82191056, 2.623126e-06, 7.70092e-07, 1)
-shader_parameter/_SurfaceColor = Color(0.6224789, 0, 0.29260376, 1)
-shader_parameter/_FillLevel = 0.0
+shader_parameter/_FillColor = Color(0.9829317, 0.85723835, 0.6504476, 1)
+shader_parameter/_SurfaceColor = Color(0.92273825, 0.7096909, 0.31856745, 1)
+shader_parameter/_FillLevel = 0.35000002011662
 shader_parameter/_MaxHeight = 2.0
-shader_parameter/_AngleZ = 0.0
+shader_parameter/_AngleZ = 1.4901200051653518e-08
 shader_parameter/_AngleX = 0.0

@@ -1,23 +1,23 @@
 extends HoverableObject
 class_name WineBottle
 
-var information : Array[ String ] = [
-	
-		"Producer/Wine : NULL",
-		"Grapes : NULL",
-		"Country : NULL",
-		"Region : NULL",
-		"Vintage : NULL",
-		"Price : NULL",
-		"Alc. By Vol. : NULL"
-	];
-	
-var producerInformation : String = "";
+@export var producerString : String = "";
+@export var grapeString : String = "";
+@export var countryString : String = "";
+@export var regionString : String = "";
+@export var vintageYearString : String = "";
+@export var priceString : String = "";
+@export var alcPercentageString : String = "";
+
+@export var websiteLinkString : String = "";
+
+@export var producerDescription : String = "";
 
 var isFocused : bool = false;
 var initialLocalRotationX : float;
 
 @export var galleryManager : GalleryManager;
+@export var area3D : Area3D;
 
 var rotationAxis : Vector3 = Vector3.UP;
 var dragStrength : float = 0.05;
@@ -41,6 +41,7 @@ func update( delta : float ) -> void :
 	
 	super( delta );
 	process_states( delta );
+	area3D.global_rotation_degrees = Vector3.ZERO;
 	
 			
 # Get Mouse Input For Dragging
@@ -90,8 +91,6 @@ func process_states( delta : float ) -> void :
 			
 # Update Where Mead Mesh Is Facing Toward
 func face_toward_camera( delta: float ) -> void:
-	
-	#var cameraUpVector : Vector3 = cameraManager.camera3D.transform.basis.z;
 	
 	var rotationSpeedFacing: float = 8.0;
 	

@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://f041d7q7cxgt"
-path="res://.godot/imported/WineBottleLabel.fbx-d5e80d3db072a8a902b355de7bc6a61a.scn"
+uid="uid://blorafxu0kul2"
+path="res://.godot/imported/WineBottleLabel.glb-0f6af80ba58dcdd35d2fb0f729820acb.scn"
 
 [deps]
 
-source_file="res://Assets/Meshes/WineBottleLabel.fbx"
-dest_files=["res://.godot/imported/WineBottleLabel.fbx-d5e80d3db072a8a902b355de7bc6a61a.scn"]
+source_file="res://Assets/Meshes/WineBottleLabel.glb"
+dest_files=["res://.godot/imported/WineBottleLabel.glb-0f6af80ba58dcdd35d2fb0f729820acb.scn"]
 
 [params]
 
@@ -32,7 +32,7 @@ meshes/force_disable_compression=false
 skins/use_named_skins=true
 animation/import=true
 animation/fps=30
-animation/trimming=true
+animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
@@ -41,18 +41,17 @@ materials/extract_format=0
 materials/extract_path=""
 _subresources={
 "meshes": {
-"Cylinder": {
+"WineBottleLabel_Cylinder": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 20.0,
 "save_to_file/enabled": true,
-"save_to_file/fallback_path": "res://Assets/Meshes/Cylinder.res",
-"save_to_file/path": "uid://be7jjyyjs36t5"
+"save_to_file/fallback_path": "res://Assets/Meshes/WineBottleLabel_Cylinder.res",
+"save_to_file/path": "uid://wknvqnxnfcsn"
 }
 }
 }
-fbx/importer=0
-fbx/allow_geometry_helper_nodes=false
-fbx/embedded_image_handling=1
-fbx/naming_version=2
+gltf/naming_version=2
+gltf/embedded_image_handling=1
+gltf/texture_map_mode=1
