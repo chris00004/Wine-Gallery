@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://qrb6dhun5n1v" path="res://Scripts/wine-bottle.gd" id="1_vvkpk"]
 [ext_resource type="ArrayMesh" uid="uid://ccj8jij8tvoor" path="res://Assets/Meshes/WineBottleGLB_Cylinder_001.res" id="2_idl11"]
 [ext_resource type="Material" uid="uid://bdwd0pqrfw1et" path="res://Materials/mat-outline.tres" id="3_xi6h0"]
-[ext_resource type="ArrayMesh" uid="uid://d06p4arst07c6" path="res://Assets/Meshes/WineBottleLabel_Cylinder.res" id="4_itbyw"]
+[ext_resource type="ArrayMesh" uid="uid://wknvqnxnfcsn" path="res://Assets/Meshes/WineBottleLabel_Cylinder.res" id="4_itbyw"]
 [ext_resource type="Shader" uid="uid://isyuhgys0knd" path="res://Shaders/shader-glass.gdshader" id="4_whckr"]
-[ext_resource type="Texture2D" uid="uid://d2xu1twcxir1o" path="res://Assets/Textures/tex-weis-seyval-blanc.png" id="5_idl11"]
+[ext_resource type="Texture2D" uid="uid://d2xu1twcxir1o" path="res://Assets/Textures/Labels/tex-weis-seyval-blanc.png" id="5_idl11"]
 [ext_resource type="Shader" uid="uid://b2myjngohd06b" path="res://Shaders/shader-liquid.gdshader" id="7_50xgl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lwsvl"]
@@ -35,7 +35,6 @@ alpha_scissor_threshold = 0.5
 alpha_antialiasing_mode = 0
 diffuse_mode = 3
 albedo_texture = ExtResource("5_idl11")
-metallic = 0.1
 metallic_specular = 0.3
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lfxu0"]

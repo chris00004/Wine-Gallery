@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://qrb6dhun5n1v" path="res://Scripts/wine-bottle.gd" id="1_vrtou"]
 [ext_resource type="ArrayMesh" uid="uid://ccj8jij8tvoor" path="res://Assets/Meshes/WineBottleGLB_Cylinder_001.res" id="2_oyhyx"]
 [ext_resource type="Material" uid="uid://bdwd0pqrfw1et" path="res://Materials/mat-outline.tres" id="3_oyhyx"]
-[ext_resource type="ArrayMesh" uid="uid://d06p4arst07c6" path="res://Assets/Meshes/WineBottleLabel_Cylinder.res" id="4_51xtj"]
+[ext_resource type="ArrayMesh" uid="uid://wknvqnxnfcsn" path="res://Assets/Meshes/WineBottleLabel_Cylinder.res" id="4_51xtj"]
 [ext_resource type="Shader" uid="uid://isyuhgys0knd" path="res://Shaders/shader-glass.gdshader" id="4_pneuu"]
-[ext_resource type="Texture2D" uid="uid://bxucov1g4bd0u" path="res://Assets/Textures/tex-apollos-praise.png" id="5_vrtou"]
+[ext_resource type="Texture2D" uid="uid://bxucov1g4bd0u" path="res://Assets/Textures/Labels/tex-apollos-praise.png" id="5_vrtou"]
 [ext_resource type="Shader" uid="uid://b2myjngohd06b" path="res://Shaders/shader-liquid.gdshader" id="7_oyhyx"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_51xtj"]
@@ -35,7 +35,6 @@ alpha_scissor_threshold = 0.5
 alpha_antialiasing_mode = 0
 diffuse_mode = 3
 albedo_texture = ExtResource("5_vrtou")
-metallic = 0.1
 metallic_specular = 0.3
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lfxu0"]
@@ -83,7 +82,7 @@ mesh = ExtResource("4_51xtj")
 surface_material_override/0 = SubResource("StandardMaterial3D_lfxu0")
 
 [node name="Liquid_Mesh" type="MeshInstance3D" parent="Bottle_Mesh" unique_id=1871575992]
-transform = Transform3D(1.05, 0, 0, 0, 1.5414746, 0, 0, 0, 1.05, 0, 1.9179707, 0)
+transform = Transform3D(1.05, 0, 0, 0, 1.3983794, 0, 0, 0, 1.05, 0, 1.5109835, 0)
 cast_shadow = 0
 mesh = SubResource("CylinderMesh_lfxu0")
 surface_material_override/0 = SubResource("ShaderMaterial_pneuu")

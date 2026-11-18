@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://qrb6dhun5n1v" path="res://Scripts/wine-bottle.gd" id="1_fpoyx"]
 [ext_resource type="ArrayMesh" uid="uid://ccj8jij8tvoor" path="res://Assets/Meshes/WineBottleGLB_Cylinder_001.res" id="2_jhex1"]
 [ext_resource type="Material" uid="uid://bdwd0pqrfw1et" path="res://Materials/mat-outline.tres" id="3_as2ar"]
-[ext_resource type="ArrayMesh" uid="uid://d06p4arst07c6" path="res://Assets/Meshes/WineBottleLabel_Cylinder.res" id="4_8ghie"]
-[ext_resource type="Texture2D" uid="uid://cv8flatwotjqq" path="res://Assets/Textures/tex-forge-cellars.png" id="5_as2ar"]
+[ext_resource type="ArrayMesh" uid="uid://wknvqnxnfcsn" path="res://Assets/Meshes/WineBottleLabel_Cylinder.res" id="4_8ghie"]
+[ext_resource type="Texture2D" uid="uid://cv8flatwotjqq" path="res://Assets/Textures/Labels/tex-forge-cellars.png" id="5_as2ar"]
 [ext_resource type="Shader" uid="uid://b2myjngohd06b" path="res://Shaders/shader-liquid.gdshader" id="5_tw6jn"]
 
 [sub_resource type="Shader" id="Shader_pjyv0"]
@@ -326,7 +326,6 @@ alpha_scissor_threshold = 0.5
 alpha_antialiasing_mode = 0
 diffuse_mode = 3
 albedo_texture = ExtResource("5_as2ar")
-metallic = 0.1
 metallic_specular = 0.3
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_lfxu0"]

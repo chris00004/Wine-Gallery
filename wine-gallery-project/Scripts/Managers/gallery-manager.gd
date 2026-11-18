@@ -1,6 +1,13 @@
 extends Node
 class_name GalleryManager
 
+enum Region {
+	NONE = 0,
+	NYS = 1,
+}
+
+var currentRegion : Region = Region.NONE;
+
 @export var camera3d : Camera3D;
 @export var mouseManager : MouseManager;
 @export var uiManager : UIManager;
@@ -14,6 +21,8 @@ class_name GalleryManager
 @export var backNodeRight : Node3D;
 
 @export var nysWines : Array[ WineBottle ];
+
+var wineRegionArraysList : Array;
 var currentWines : Array[ WineBottle ];
 var currentIndex : int = 0;
 var hoveredBottle : WineBottle;
@@ -32,44 +41,65 @@ func init() -> void :
 	if ( nysWines ) :
 		for bottle in nysWines :
 			bottle.init();
+	wineRegionArraysList = [ nysWines ];
 	mouseManager.init();
+	uiManager.init();
 	
 func update( delta : float ) -> void :
 	
-	if ( nysWines ) :
-		for bottle in nysWines :
-			bottle.update( delta );
+	var optionSelected : int = uiManager.regionSelection.selected;
+	if( optionSelected != int( currentRegion ) ) :
+		if ( optionSelected < Region.size() && optionSelected > -1 ) :
+			change_wine_region( uiManager.regionSelection.selected as Region );
+			uiManager.wineInfoPanels.visible = true;
 		
-	if( Input.is_key_pressed( KEY_0 ) ) :
-		change_wine_array( nysWines );
+	if ( currentWines ) :
+		for bottle in currentWines :
+			bottle.update( delta );
 
 	if ( mouseManager.currentHoveredNode is WineBottle ) :
 		hoveredBottle = mouseManager.currentHoveredNode;
-		
-	if ( hoveredBottle ) :
 	
-		if ( hoveredBottle == currentBottle ) :
-			if ( Input.is_action_just_pressed( "LeftClick" ) && !isFocused && hoveredBottle.isHovered ) :
-				hoveredBottle.isFocused = true;
-				isFocused = true;
+	if ( !isFocused ) :
+		if ( hoveredBottle ) :
+			if ( hoveredBottle == currentBottle ) :
+				if ( Input.is_action_just_pressed( "LeftClick" ) && !isFocused && hoveredBottle.isHovered ) :
+					hoveredBottle.isFocused = true;
+					isFocused = true;
+					uiManager.cursorHSizePanel.mouse_default_cursor_shape = Control.CURSOR_HSIZE;
+					uiManager.exitFocusPrompt.visible = true;
+					
+			elif ( !isFocused ) :
+				if ( Input.is_action_just_pressed( "LeftClick" ) && hoveredBottle.isHovered ) :
+					set_current_wine( hoveredBottle );
 				
-			elif ( Input.is_action_just_pressed( "RightClick" ) && hoveredBottle.isFocused ) :
-				hoveredBottle.isFocused = false;
-				isFocused = false;
-				
-		elif ( !isFocused ) :
-			if ( Input.is_action_just_pressed( "LeftClick" ) && hoveredBottle.isHovered ) :
-				set_current_wine( hoveredBottle );
-			
-		if ( hoveredBottle.isFocused ) :
-			uiManager.cursorHSizePanel.mouse_default_cursor_shape = Control.CURSOR_HSIZE;
-		else :
+		
+	else :
+		if ( Input.is_action_just_pressed( "RightClick" ) ) :
+			currentBottle.isFocused = false;
+			isFocused = false;
 			uiManager.cursorHSizePanel.mouse_default_cursor_shape = Control.CURSOR_ARROW;
+			uiManager.exitFocusPrompt.visible = false;
 			
+
 	mouseManager.update( delta );
 		
-func change_wine_array( array : Array[ WineBottle ] ) -> void :
+func change_wine_region( region : Region ) -> void :
+
+	if ( region == currentRegion ) :
+		return;
+		
+	currentRegion = region;
 	
+	if ( !currentWines.is_empty() ) :
+		shelve_bottles( currentWines );
+		
+	if ( currentRegion == Region.NONE ) :
+		return;
+		
+	var array : Array[ WineBottle ] = wineRegionArraysList[ int( currentRegion ) - 1 ];
+	print( array )
+		
 	currentWines = array;
 	currentIndex = 0;
 	currentBottle = currentWines[ currentIndex ];
@@ -132,6 +162,7 @@ func shift_bottles() -> void :
 		else :
 			currentWines[ i ].global_position = middleNode.global_position + Vector3( 0, 0, -12 );
 			print( "OffScreen" + currentWines[ i ].to_string() );
+	
 			
 func get_wine_index( index : int ) -> int :
 	
@@ -144,3 +175,7 @@ func get_wine_index( index : int ) -> int :
 		return currentWines.size() + index;
 		
 	return index;
+
+func shelve_bottles( bottles : Array[ WineBottle ] ) -> void :
+	for bottle in bottles :
+		bottle.global_position.y += 10;

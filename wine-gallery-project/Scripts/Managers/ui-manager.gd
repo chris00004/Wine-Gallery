@@ -5,9 +5,17 @@ class_name UIManager
 
 @export var producerlabel : Label;
 @export var informationlabel : Label;
+@export var descriptionlabel : Label;
 
 @export var cursorHSizePanel : Panel;
 @export var linkButton : LinkButton;
+
+@export var wineInfoPanels : HBoxContainer;
+@export var exitFocusPrompt : Control;
+
+func init() -> void :
+	wineInfoPanels.visible = false;
+	exitFocusPrompt.visible = false;
 
 func update_wine_information( bottle : WineBottle ) -> void :
 	
@@ -20,6 +28,8 @@ func update_wine_information( bottle : WineBottle ) -> void :
 							+ "\nPrice: $" + bottle.priceString \
 							+ "\nAlc. by Vol.: " + bottle.alcPercentageString + "%" \
 							;
+							
+	descriptionlabel.text = bottle.producerDescription;
 							
 	linkButton.visible = false;
 	linkButton.uri = "";

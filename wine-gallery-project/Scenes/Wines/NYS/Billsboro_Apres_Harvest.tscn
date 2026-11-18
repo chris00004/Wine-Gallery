@@ -1,0 +1,385 @@
+[gd_scene format=3 uid="uid://ch4856yywlxu6"]
+
+[ext_resource type="Script" uid="uid://qrb6dhun5n1v" path="res://Scripts/wine-bottle.gd" id="1_xmr5w"]
+[ext_resource type="ArrayMesh" uid="uid://ccj8jij8tvoor" path="res://Assets/Meshes/WineBottleGLB_Cylinder_001.res" id="2_3kfg1"]
+[ext_resource type="Material" uid="uid://bdwd0pqrfw1et" path="res://Materials/mat-outline.tres" id="3_yfrt4"]
+[ext_resource type="ArrayMesh" uid="uid://wknvqnxnfcsn" path="res://Assets/Meshes/WineBottleLabel_Cylinder.res" id="4_ocjy7"]
+[ext_resource type="Texture2D" uid="uid://b85jwlh5y60j7" path="res://Assets/Textures/Labels/tex-billsboro-apres-harvest.png" id="5_xmr5w"]
+[ext_resource type="Shader" uid="uid://b2myjngohd06b" path="res://Shaders/shader-liquid.gdshader" id="6_n7x5n"]
+
+[sub_resource type="Shader" id="Shader_pjyv0"]
+resource_local_to_scene = true
+code = "shader_type spatial;
+render_mode world_vertex_coords, cull_disabled, depth_draw_always;
+
+uniform sampler2D screen : hint_screen_texture, filter_linear_mipmap_anisotropic, repeat_disable;
+group_uniforms colours;
+uniform vec3 transparency_colour : source_color;
+
+group_uniforms material;
+uniform float AirIOR = 1.0;
+uniform float IOR = 1.5;
+
+group_uniforms textures;
+uniform vec2 uv1_scale = vec2(1.0);
+uniform vec2 uv1_offset = vec2(0.0);
+uniform sampler2D normal_texture : filter_linear_mipmap_anisotropic, hint_normal;
+uniform float normalstrength : hint_range(0.0, 5.0, 0.01) = 1.0;
+uniform sampler2D roughness_texture : filter_linear_mipmap_anisotropic;
+uniform sampler2D transparency_texture : filter_linear_mipmap_anisotropic, source_color;
+
+group_uniforms refraction;
+uniform int refraction_type : hint_enum(\"None\", \"Simple\", \"Simple 2\", \"Traced\") = 1;
+uniform float simple_refraction_amount = 0.1;
+uniform float traced_refraction_far_clip = 50.0;
+uniform int traced_refraction_steps : hint_range(64, 1024, 16) = 512;
+
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap, repeat_disable;
+
+group_uniforms screen_space_reflection;
+
+uniform int ssr_type : hint_enum(\"None\", \"Simple\", \"Traced\") = 2;
+uniform float traced_ssr_far_clip = 50.0;
+uniform int traced_ssr_steps : hint_range(64, 1024, 16) = 512;
+uniform float ssr_screen_fade : hint_range(0.01, 0.5, 0.01) = 0.05;
+
+float schlickfresnel(float ior1, float ior2, vec3 view, vec3 norm) {
+	float incident = dot(view, norm);
+	float reflectance = ((ior2 - ior1)/(ior2 + ior1)) * ((ior2 - ior1)/(ior2 + ior1));
+	float fresnelincident = reflectance + (1.0 - reflectance) * pow(1.0 - cos(incident), 5.0);
+	return clamp(fresnelincident / incident, 0.0, 1.0);
+}
+
+void vertex() {
+	UV = UV * uv1_scale + uv1_offset;
+	// Called for every vertex the material is visible on.
+}
+
+float snells_window(vec3 normal, vec3 view, float ior) {
+	float cos_theta = dot(normal, view);
+	return step(sqrt(1.0 - cos_theta * cos_theta) * ior, 1.0);
+}
+
+float linear_depth(float nonlinear_depth, mat4 inv_projection_matrix) {
+	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
+		nonlinear_depth = nonlinear_depth * 2.0 - 1.0;
+	#endif
+	return 1.0 / (nonlinear_depth * inv_projection_matrix[2].w + inv_projection_matrix[3].w);
+}
+
+float nonlinear_depth(float linear_depth, mat4 inv_projection_matrix) {
+	#if CURRENT_RENDERER == RENDERER_COMPATIBILITY
+		linear_depth = linear_depth * 0.5 + 0.5;
+	#endif
+	return (1.0 / linear_depth - inv_projection_matrix[3].w) / inv_projection_matrix[2].w;
+}
+
+vec2 view2uv(vec3 position_view_space, mat4 proj_m)
+{
+	vec4 position_clip_space = proj_m * vec4(position_view_space.xyz, 1.0);
+	vec2 position_ndc = position_clip_space.xy / position_clip_space.w;
+	return position_ndc.xy * 0.5 + 0.5;
+}
+
+float remap(float x, float min1, float max1, float min2, float max2) {
+	return ((x - min1) / (max1 - min1) + min2) * (max2 - min2);
+}
+float remap1(float x, float min1, float max1) {
+	return (x - min1) / (max1 - min1);
+}
+
+float edge_fade(vec2 uv, float size) {
+	float x1 = clamp(remap1(uv.x, 0.0, size), 0.0, 1.0);
+	float x2 = clamp(remap1(uv.x, 1.0, 1.0 - size), 0.0, 1.0);
+	float y1 = clamp(remap1(uv.y, 0.0, size), 0.0, 1.0);
+	float y2 = clamp(remap1(uv.y, 1.0, 1.0 - size), 0.0, 1.0);
+	return x1*x2*y1*y2;
+}
+
+void refraction(vec3 normal, vec3 vertex, vec3 colour, vec2 normmap, bool reverse, mat4 projection_matrix, vec3 tangent, vec3 binormal, vec2 screen_uv, vec2 viewport_size, inout vec3 emission) {
+	vec3 view = normalize(-vertex);
+	mat4 inv_proj_mat = inverse(projection_matrix);
+	if (refraction_type == 3) {
+		
+		vec3 refracted = refract(view, normal, AirIOR / -IOR);
+		if (reverse) {
+			refracted = refract(view, normal, -IOR / AirIOR);
+		}
+		vec3 pos = vertex;
+		float dist = 0.0;
+		int curstep = 0;
+		bool finished = false;
+		vec2 uv;
+		float currentdepth;
+		float lastdepth1 = -vertex.z;
+			
+		while (curstep < traced_refraction_steps) {
+			float step_scale = float(curstep + 1) / float(traced_refraction_steps);
+			float step_dist = step_scale * step_scale * traced_refraction_far_clip;
+			pos += refracted * step_dist;
+			dist += step_dist;
+			curstep += 1;
+			float lastdepth2 = lastdepth1;
+			float lastdepth1 = currentdepth;
+			currentdepth = -pos.z;
+			uv = view2uv(pos, projection_matrix);
+			float testdepth = linear_depth(texture(DEPTH_TEXTURE, uv).r, inv_proj_mat);
+			if (testdepth < lastdepth2) {
+				break;
+			}
+			if (testdepth < currentdepth) {
+				finished = true;
+				break;
+			}
+		}
+		
+		
+		
+		
+		
+		
+		float lineardepth = linear_depth(texture(DEPTH_TEXTURE, uv).r, inv_proj_mat);
+		//float selfdepth = 1.0/(1.0 + 2.0 * distance(wposition, CAMERA_POSITION_WORLD));
+		//vec3 newvolcolour = mix(volumecolour, vec3(1.0), clamp(1.0 / (depth_diff * 1.0), 0.0, 1.0));
+		
+		emission = colour * texture(screen, uv).rgb;
+	} else if (refraction_type == 2) {
+		
+		float lineardepth = linear_depth(texture(DEPTH_TEXTURE, screen_uv).r, inv_proj_mat);
+		float selfdepth = -vertex.z;
+		float depth_diff = lineardepth - selfdepth;
+		float x_mult = viewport_size.y / viewport_size.x;
+		
+		vec2 offset = normal.xy * vec2(x_mult, 1.0);
+		vec2 refracted_uv = screen_uv + offset * simple_refraction_amount * depth_diff / lineardepth;
+		float newdepth = linear_depth(texture(DEPTH_TEXTURE, refracted_uv).r, inv_proj_mat);
+		if (newdepth >= selfdepth) {
+			depth_diff = newdepth - selfdepth;
+		}
+		//float selfdepth = 1.0/(1.0 + 2.0 * distance(wposition, CAMERA_POSITION_WORLD));
+		//vec3 newvolcolour = mix(volumecolour, vec3(1.0), clamp(1.0 / (depth_diff * 1.0), 0.0, 1.0));
+		emission = colour * texture(screen, refracted_uv).rgb;
+
+		if (newdepth < selfdepth) {
+			emission = colour * texture(screen, screen_uv).rgb;
+		}
+
+	} else if (refraction_type == 1) {
+		
+		float lineardepth = linear_depth(texture(DEPTH_TEXTURE, screen_uv).r, inv_proj_mat);
+		float selfdepth = -vertex.z;
+		float depth_diff = lineardepth - selfdepth;
+		float x_mult = viewport_size.y / viewport_size.x;
+		vec3 tanx = binormal * (normmap.x - 0.5) * normalstrength * x_mult;
+		vec3 tany = tangent * (normmap.y - 0.5) * normalstrength;
+		vec2 refracted_uv = screen_uv + (tanx + tany).xy * simple_refraction_amount * depth_diff / lineardepth;
+		float newdepth = linear_depth(texture(DEPTH_TEXTURE, refracted_uv).r, inv_proj_mat);
+		if (newdepth >= selfdepth) {
+			depth_diff = newdepth - selfdepth;
+		}
+		//float selfdepth = 1.0/(1.0 + 2.0 * distance(wposition, CAMERA_POSITION_WORLD));
+		//vec3 newvolcolour = mix(volumecolour, vec3(1.0), clamp(1.0 / (depth_diff * 1.0), 0.0, 1.0));
+		emission = colour * texture(screen, refracted_uv).rgb;
+
+		if (newdepth < selfdepth) {
+			emission = colour * texture(screen, screen_uv).rgb;
+		}
+
+	} else {
+		float lineardepth = linear_depth(texture(DEPTH_TEXTURE, screen_uv).r, inv_proj_mat);
+		float selfdepth = -vertex.z;
+		float depth_diff = lineardepth - selfdepth;
+		emission = colour * texture(screen, screen_uv).rgb;
+	}
+}
+
+void reflection(vec3 normal, vec3 vertex, vec3 colour, mat4 projection_matrix, inout vec3 emission, inout float specular) {
+	vec3 view = normalize(-vertex);
+	mat4 inv_proj_mat = inverse(projection_matrix);
+	if (ssr_type == 2) {
+		vec3 reflected = -reflect(view, normal);
+		vec3 pos = vertex;
+		int curstep = 0;
+		bool finished = false;
+		vec2 uv;
+		float currentdepth;
+		float lastdepth1 = -vertex.z;
+		while (curstep < traced_ssr_steps) {
+			float step_scale = float(curstep + 1) / float(traced_ssr_steps);
+			float step_dist = step_scale * step_scale * traced_ssr_far_clip;
+			pos += reflected * step_dist;
+			curstep += 1;
+			float lastdepth2 = lastdepth1;
+			float lastdepth1 = currentdepth;
+			currentdepth = -pos.z;
+			uv = view2uv(pos, projection_matrix);
+			if (!(uv.x < 1.0 && uv.y < 1.0 && uv.x > 0.0 && uv.y > 0.0)) {
+				break;
+			}
+			float testdepth = linear_depth(texture(DEPTH_TEXTURE, uv).r, inv_proj_mat);
+			if (testdepth < lastdepth2) {
+				break;
+			}
+			if (testdepth < currentdepth) {
+				finished = true;
+				break;
+			}
+		}
+		if (finished && currentdepth < traced_ssr_far_clip * 0.99) {
+			specular *= 1.0 - edge_fade(uv, ssr_screen_fade);
+			emission += texture(screen, uv).xyz * schlickfresnel(1.0, 1.33, view, normal) * edge_fade(uv, ssr_screen_fade) * colour;
+		}
+	} else if (ssr_type == 1) {
+		vec3 reflected = -reflect(view, normal);
+		if (reflected.z < 0.0) {
+			vec2 uv = view2uv(reflected, projection_matrix);
+			float testdepth = texture(DEPTH_TEXTURE, uv).r;
+			
+			if (testdepth > 0.0) {
+				specular *= 1.0 - edge_fade(uv, ssr_screen_fade);
+				emission += texture(screen, uv).xyz * schlickfresnel(1.0, 1.33, view, normal) * edge_fade(uv, ssr_screen_fade) * colour; 
+			}
+		}
+	}
+}
+
+
+void fragment() {
+
+	vec3 onorm = NORMAL;
+
+	vec2 normmap = texture(normal_texture, UV).xy;
+	NORMAL += TANGENT * (normmap.x - 0.5) * normalstrength;
+	NORMAL += BINORMAL * (normmap.y - 0.5) * normalstrength;
+	vec3 transparency = texture(transparency_texture, UV).xyz * transparency_colour;
+	vec3 wnorm = (vec4(NORMAL, 0.0) * VIEW_MATRIX).xyz;
+	vec3 wview = (vec4(VIEW, 0.0) * VIEW_MATRIX).xyz;
+	ROUGHNESS = 0.05;
+	METALLIC = 0.0;
+	ALBEDO = vec3(0.0);
+	if (FRONT_FACING) {
+		float fres = clamp(schlickfresnel(AirIOR, IOR, VIEW, NORMAL), 0.0, 1.0);
+
+		float lineardepth = linear_depth(texture(DEPTH_TEXTURE, SCREEN_UV).r, INV_PROJECTION_MATRIX);
+		float selfdepth = -VERTEX.z;
+		float depth_diff = lineardepth - selfdepth;
+		// REFRACTION
+		
+		refraction(NORMAL, VERTEX, transparency, normmap, false, PROJECTION_MATRIX, TANGENT, BINORMAL, SCREEN_UV, VIEWPORT_SIZE, EMISSION);
+		EMISSION *= 1.0 - fres;
+		// SSR
+		reflection(NORMAL, VERTEX, vec3(1.0), PROJECTION_MATRIX, EMISSION, SPECULAR);
+		// EDGE EFFECT
+
+
+	} else {
+
+		// SNELLS WINDOW
+		float window = dot(refract(VIEW, NORMAL, IOR / AirIOR), -NORMAL);
+
+		if (window >= 1.0) {
+			SPECULAR = 0.0;
+			refraction(NORMAL, VERTEX, transparency, normmap, true, PROJECTION_MATRIX, TANGENT, BINORMAL, SCREEN_UV, VIEWPORT_SIZE, EMISSION);
+		} else if (window <= 0.0) {
+			// SSR
+
+			reflection(NORMAL, VERTEX, transparency, PROJECTION_MATRIX, EMISSION, SPECULAR);
+
+		} else {
+			SPECULAR *= clamp(1.0 - window, 0.0, 1.0);
+
+			refraction(NORMAL, VERTEX, transparency, normmap, true, PROJECTION_MATRIX, TANGENT, BINORMAL, SCREEN_UV, VIEWPORT_SIZE, EMISSION);
+			EMISSION *= window;
+			// SSR
+
+			reflection(NORMAL, VERTEX, transparency, PROJECTION_MATRIX, EMISSION, SPECULAR);
+		}
+
+	}
+	ALPHA = clamp(ALPHA, 0.0, 1.0);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_27b57"]
+resource_local_to_scene = true
+render_priority = 0
+next_pass = ExtResource("3_yfrt4")
+shader = SubResource("Shader_pjyv0")
+shader_parameter/transparency_colour = Color(0.19030479, 0.19471857, 1.2032687e-07, 1)
+shader_parameter/AirIOR = 1.0
+shader_parameter/IOR = 1.5
+shader_parameter/uv1_scale = Vector2(1, 1)
+shader_parameter/uv1_offset = Vector2(0, 0)
+shader_parameter/normalstrength = 1.0
+shader_parameter/refraction_type = 1
+shader_parameter/simple_refraction_amount = 0.1
+shader_parameter/traced_refraction_far_clip = 50.0
+shader_parameter/traced_refraction_steps = 512
+shader_parameter/ssr_type = 2
+shader_parameter/traced_ssr_far_clip = 50.0
+shader_parameter/traced_ssr_steps = 512
+shader_parameter/ssr_screen_fade = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lfxu0"]
+resource_local_to_scene = true
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+diffuse_mode = 3
+albedo_texture = ExtResource("5_xmr5w")
+metallic_specular = 0.3
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_lfxu0"]
+top_radius = 0.8623047
+bottom_radius = 0.8623047
+height = 3.6782227
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7vjhv"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("6_n7x5n")
+shader_parameter/_FillColor = Color(0.99607843, 0.8392157, 0.22745098, 1)
+shader_parameter/_SurfaceColor = Color(0.8255747, 0.68314964, 0.027224293, 1)
+shader_parameter/_FillLevel = 0.35000002011662
+shader_parameter/_MaxHeight = 2.0
+shader_parameter/_AngleZ = 1.4901200051653518e-08
+shader_parameter/_AngleX = 0.0
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_qny57"]
+height = 1.9472656
+radius = 0.5522461
+
+[node name="Billsboro_Apres_Harvest" type="Node3D" unique_id=1225881532 node_paths=PackedStringArray("area3D", "mesh")]
+script = ExtResource("1_xmr5w")
+producerString = "Billsboro Winery Apres Late Harvest"
+grapeString = "100% Vignoles (hybrid)"
+countryString = "US"
+regionString = "FLX, Seneca Lake"
+vintageYearString = "2024"
+priceString = "32 (375ml)"
+alcPercentageString = "11"
+websiteLinkString = "https://billsborowinery.orderport.net/product-details/1179/2024-apres-late-harvest"
+producerDescription = "A staple in the Billsboro lineup, this late harvest Vignoles offers a bold and rich palate with a surprisingly zesty finish.  Perfect alongside fruit tarts and peach cobbler a la mode. Vignoles is an intriguing varietal with a unique backstory. Believed to be a French hybrid named Ravat 51, it was widely grown and given the name Vignoles by the Finger Lakes Wine Growers Association in 1970. However genetic testing has shown that there is no relationship between our Finger Lakes Vignoles and Ravat 51, leaving the origin of this grape varietal a mystery. What we know for certain: it ripens well and maintains vibrant acidity, making it perfect material for a post-meal sip."
+area3D = NodePath("Area3D")
+mesh = NodePath("Bottle_Mesh")
+
+[node name="Bottle_Mesh" type="MeshInstance3D" parent="." unique_id=1014277355]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0)
+mesh = ExtResource("2_3kfg1")
+surface_material_override/0 = SubResource("ShaderMaterial_27b57")
+
+[node name="Label_Mesh" type="MeshInstance3D" parent="Bottle_Mesh" unique_id=430118029]
+transform = Transform3D(-1, 0, -1.509958e-07, 0, 1, 0, 1.509958e-07, 0, -1, 0, 0, 0)
+mesh = ExtResource("4_ocjy7")
+surface_material_override/0 = SubResource("StandardMaterial3D_lfxu0")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Bottle_Mesh" unique_id=1871575992]
+transform = Transform3D(1.05, 0, 0, 0, 1.19, 0, 0, 0, 1.05, 0, 1.0723679, 0)
+cast_shadow = 0
+mesh = SubResource("CylinderMesh_lfxu0")
+surface_material_override/0 = SubResource("ShaderMaterial_7vjhv")
+
+[node name="Area3D" type="Area3D" parent="." unique_id=1255559068]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" unique_id=1955255862]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52200544, 0)
+shape = SubResource("CylinderShape3D_qny57")

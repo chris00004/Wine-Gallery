@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2xu1twcxir1o"
-path.s3tc="res://.godot/imported/tex-weis-seyval-blanc.png-7178d6e0dafc79584e6f919d1c0ca6d7.s3tc.ctex"
+uid="uid://d1otlvrpqh3gs"
+path.s3tc="res://.godot/imported/tex-white-64x64.png-2671931bf65b440b9510ec0366ba6801.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://Assets/Textures/tex-weis-seyval-blanc.png"
-dest_files=["res://.godot/imported/tex-weis-seyval-blanc.png-7178d6e0dafc79584e6f919d1c0ca6d7.s3tc.ctex"]
+source_file="res://Assets/Textures/Glass Transparency/tex-white-64x64.png"
+dest_files=["res://.godot/imported/tex-white-64x64.png-2671931bf65b440b9510ec0366ba6801.s3tc.ctex"]
 
 [params]
 

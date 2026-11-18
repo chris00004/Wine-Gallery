@@ -2,13 +2,14 @@
 
 [ext_resource type="Theme" uid="uid://c27x448cr16bd" path="res://theme-ui.tres" id="1_5f33e"]
 [ext_resource type="Script" uid="uid://q1llnek7ng5c" path="res://Scripts/Managers/ui-manager.gd" id="1_c4u51"]
-[ext_resource type="Texture2D" uid="uid://cmmjbo46d1v42" path="res://icon.svg" id="2_tp2jp"]
+[ext_resource type="Texture2D" uid="uid://cfljujfht3w84" path="res://Assets/Textures/ui-logo-icon.png" id="2_ehh1i"]
+[ext_resource type="Texture2D" uid="uid://cbueti0k4048d" path="res://Assets/Textures/ui-right-click.png" id="4_ehh1i"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tp2jp"]
 bg_color = Color(0, 0, 0, 0)
 border_color = Color(1, 1, 1, 1)
 
-[node name="GalleryUi" type="Control" unique_id=881974233 node_paths=PackedStringArray("regionSelection", "producerlabel", "informationlabel", "cursorHSizePanel", "linkButton")]
+[node name="GalleryUi" type="Control" unique_id=881974233 node_paths=PackedStringArray("regionSelection", "producerlabel", "informationlabel", "descriptionlabel", "cursorHSizePanel", "linkButton", "wineInfoPanels", "exitFocusPrompt")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,10 +19,13 @@ grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_c4u51")
 regionSelection = NodePath("HBoxContainer/Control/OptionButton")
-producerlabel = NodePath("HBoxContainer2/Control/Producer_Label")
-informationlabel = NodePath("HBoxContainer2/Control/Information_Label")
+producerlabel = NodePath("WineInfoPanels/Control/Producer_Label")
+informationlabel = NodePath("WineInfoPanels/Control/Information_Label")
+descriptionlabel = NodePath("WineInfoPanels/Control/Description_Label")
 cursorHSizePanel = NodePath("CenterContainer/CursorHSizePanel")
-linkButton = NodePath("HBoxContainer2/Control/LinkButton")
+linkButton = NodePath("WineInfoPanels/Control/LinkButton")
+wineInfoPanels = NodePath("WineInfoPanels")
+exitFocusPrompt = NodePath("ExitFocus")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=1934882759]
 layout_mode = 0
@@ -55,14 +59,14 @@ layout_mode = 2
 
 [node name="Icon" type="Sprite2D" parent="HBoxContainer/Control/HBoxContainer/Control" unique_id=1247836920]
 position = Vector2(32, 31)
-scale = Vector2(0.48122606, 0.48122606)
-texture = ExtResource("2_tp2jp")
+scale = Vector2(0.14990078, 0.14990078)
+texture = ExtResource("2_ehh1i")
 
 [node name="Label" type="Label" parent="HBoxContainer/Control/HBoxContainer" unique_id=1290885638]
 layout_mode = 2
 theme_override_constants/line_spacing = -2
 theme_override_font_sizes/font_size = 20
-text = "G/-/0ST
+text = "G/-/0ST's
 Wine Gallery"
 
 [node name="OptionButton" type="OptionButton" parent="HBoxContainer/Control" unique_id=34638215]
@@ -77,6 +81,7 @@ selected = 0
 item_count = 2
 popup/item_0/text = "Select Region"
 popup/item_0/id = 0
+popup/item_0/separator = true
 popup/item_1/text = "NYS"
 popup/item_1/id = 1
 
@@ -89,19 +94,17 @@ offset_bottom = 2231.0
 
 [node name="CenterContainer" type="CenterContainer" parent="." unique_id=1434008880]
 layout_mode = 0
-offset_right = 1282.0
+offset_right = 1289.0
 offset_bottom = 800.0
 mouse_filter = 2
-mouse_behavior_recursive = 1
 
 [node name="CursorHSizePanel" type="Panel" parent="CenterContainer" unique_id=701706812]
 custom_minimum_size = Vector2(300, 800)
 layout_mode = 2
-mouse_default_cursor_shape = 10
 theme = ExtResource("1_5f33e")
 theme_override_styles/panel = SubResource("StyleBoxFlat_tp2jp")
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="." unique_id=688683561]
+[node name="WineInfoPanels" type="HBoxContainer" parent="." unique_id=688683561]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -114,17 +117,17 @@ grow_horizontal = 0
 theme_override_constants/separation = 83
 alignment = 2
 
-[node name="Control" type="Control" parent="HBoxContainer2" unique_id=236007548]
+[node name="Control" type="Control" parent="WineInfoPanels" unique_id=236007548]
 layout_mode = 2
 
-[node name="Panel" type="Panel" parent="HBoxContainer2/Control" unique_id=1571696831]
+[node name="Panel" type="Panel" parent="WineInfoPanels/Control" unique_id=1571696831]
 layout_mode = 0
 offset_left = -12.0
 offset_right = 301.0
 offset_bottom = 45.0
 theme = ExtResource("1_5f33e")
 
-[node name="Panel2" type="Panel" parent="HBoxContainer2/Control" unique_id=1999325894]
+[node name="Panel2" type="Panel" parent="WineInfoPanels/Control" unique_id=1999325894]
 layout_mode = 0
 offset_left = -12.0
 offset_top = 65.0
@@ -132,7 +135,15 @@ offset_right = 301.0
 offset_bottom = 268.0
 theme = ExtResource("1_5f33e")
 
-[node name="Producer_Label" type="Label" parent="HBoxContainer2/Control" unique_id=1213211523]
+[node name="Panel3" type="Panel" parent="WineInfoPanels/Control" unique_id=1786771920]
+layout_mode = 0
+offset_left = -12.0
+offset_top = 288.0
+offset_right = 301.0
+offset_bottom = 674.0
+theme = ExtResource("1_5f33e")
+
+[node name="Producer_Label" type="Label" parent="WineInfoPanels/Control" unique_id=1213211523]
 layout_mode = 0
 offset_left = 1.0
 offset_top = 9.0
@@ -140,26 +151,31 @@ offset_right = 297.0
 offset_bottom = 57.0
 theme_override_constants/line_spacing = 2
 theme_override_font_sizes/font_size = 16
-text = "Producer/Wine : Weis Vineyards
+text = "Producer
 "
 autowrap_mode = 3
 
-[node name="Information_Label" type="Label" parent="HBoxContainer2/Control" unique_id=970767750]
+[node name="Information_Label" type="Label" parent="WineInfoPanels/Control" unique_id=970767750]
 layout_mode = 0
 offset_top = 74.0
 offset_right = 296.0
 offset_bottom = 335.0
 theme_override_constants/line_spacing = 2
 theme_override_font_sizes/font_size = 16
-text = "Grapes : 100% Seyval Blanc (Hybrid)
-Country : United States of America
-Region : NYS Appellation, Keuka Lake
-Vintage : 2025
-Price : $20
-Alc. By Vol. : 12%"
+text = "Info"
 autowrap_mode = 3
 
-[node name="LinkButton" type="LinkButton" parent="HBoxContainer2/Control" unique_id=1384890463]
+[node name="Description_Label" type="Label" parent="WineInfoPanels/Control" unique_id=1766848518]
+layout_mode = 0
+offset_top = 297.0
+offset_right = 289.0
+offset_bottom = 659.0
+theme_override_constants/line_spacing = 2
+theme_override_font_sizes/font_size = 12
+text = "Producer Description"
+autowrap_mode = 3
+
+[node name="LinkButton" type="LinkButton" parent="WineInfoPanels/Control" unique_id=1384890463]
 layout_mode = 0
 offset_left = 135.0
 offset_top = 236.0
@@ -168,3 +184,25 @@ offset_bottom = 276.0
 theme = ExtResource("1_5f33e")
 text = "Visit Producer Website"
 uri = "https://www.weisvineyards.com/product/seyval-blanc-2025"
+
+[node name="ExitFocus" type="Control" parent="." unique_id=2143987741]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Producer_Label" type="Label" parent="ExitFocus" unique_id=1513747055]
+layout_mode = 0
+offset_left = 829.0
+offset_top = 665.99994
+offset_right = 915.0
+offset_bottom = 713.99994
+theme_override_constants/line_spacing = 2
+theme_override_font_sizes/font_size = 16
+text = "[ Return ]
+"
+autowrap_mode = 3
+
+[node name="RightClick" type="Sprite2D" parent="ExitFocus" unique_id=1530170795]
+position = Vector2(807.0969, 673.0969)
+scale = Vector2(0.08240993, 0.08240993)
+texture = ExtResource("4_ehh1i")

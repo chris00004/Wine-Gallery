@@ -5,7 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://ta4307f8cxqh" path="res://Scenes/Gallery_UI.tscn" id="2_pylep"]
 [ext_resource type="PackedScene" uid="uid://cofe0nyv6sfst" path="res://Scenes/Wines/NYS/Forge_Cab_Franc.tscn" id="4_jb8ey"]
 [ext_resource type="PackedScene" uid="uid://doesu317phekp" path="res://Scenes/Wines/NYS/Weis_Seyval_Blanc.tscn" id="4_q2xtv"]
+[ext_resource type="PackedScene" uid="uid://bvthiktstxshx" path="res://Scenes/Wines/NYS/Wolffer_Estate_Cab_Franc.tscn" id="4_sv3ml"]
 [ext_resource type="PackedScene" uid="uid://bfe4ye178hg7b" path="res://Scenes/Wines/NYS/Apollos_Praise_Rose.tscn" id="5_0ejyl"]
+[ext_resource type="PackedScene" uid="uid://bvr1weupqfwl5" path="res://Scenes/Wines/NYS/Hazlitt_Red_Cat.tscn" id="8_7jpji"]
+[ext_resource type="PackedScene" uid="uid://ch4856yywlxu6" path="res://Scenes/Wines/NYS/Billsboro_Apres_Harvest.tscn" id="9_7jpji"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_q2xtv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -43,7 +46,7 @@ sideNodeLeft = NodePath("Camera3D/Bottle_Position_Nodes/NodeLeft")
 sideNodeRight = NodePath("Camera3D/Bottle_Position_Nodes/NodeRight")
 backNodeLeft = NodePath("Camera3D/Bottle_Position_Nodes/NodeLeftBack")
 backNodeRight = NodePath("Camera3D/Bottle_Position_Nodes/NodeRightBack")
-nysWines = [NodePath("NYS_Wines/Weis_Seyval_Blanc"), NodePath("NYS_Wines/Apollos_Praise_Rose"), NodePath("NYS_Wines/Forge_Cab_Franc")]
+nysWines = [NodePath("NYS_Wines/Weis_Seyval_Blanc"), NodePath("NYS_Wines/Apollos_Praise_Rose"), NodePath("NYS_Wines/Forge_Cab_Franc"), NodePath("NYS_Wines/Hazlitt_Red_Cat"), NodePath("NYS_Wines/Wolffer_Estate_Cab_Franc"), NodePath("NYS_Wines/Billsboro_Apres_Harvest")]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1209063977]
 environment = SubResource("Environment_jb8ey")
@@ -125,7 +128,11 @@ surface_material_override/0 = SubResource("StandardMaterial3D_hjb8m")
 [node name="NYS_Wines" type="Node3D" parent="." unique_id=1029691970]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -8, -4)
 
-[node name="Forge_Cab_Franc" parent="NYS_Wines" unique_id=1225881532 node_paths=PackedStringArray("galleryManager") instance=ExtResource("4_jb8ey")]
+[node name="Wolffer_Estate_Cab_Franc" parent="NYS_Wines" unique_id=1225881532 node_paths=PackedStringArray("galleryManager") instance=ExtResource("4_sv3ml")]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0)
+galleryManager = NodePath("../..")
+
+[node name="Forge_Cab_Franc" parent="NYS_Wines" unique_id=1186780588 node_paths=PackedStringArray("galleryManager") instance=ExtResource("4_jb8ey")]
 transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0)
 galleryManager = NodePath("../..")
 
@@ -136,3 +143,14 @@ galleryManager = NodePath("../..")
 [node name="Weis_Seyval_Blanc" parent="NYS_Wines" unique_id=1027643668 node_paths=PackedStringArray("galleryManager") instance=ExtResource("4_q2xtv")]
 transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0)
 galleryManager = NodePath("../..")
+
+[node name="Hazlitt_Red_Cat" parent="NYS_Wines" unique_id=1545150332 node_paths=PackedStringArray("galleryManager") instance=ExtResource("8_7jpji")]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0)
+galleryManager = NodePath("../..")
+
+[node name="Billsboro_Apres_Harvest" parent="NYS_Wines" unique_id=1811826478 node_paths=PackedStringArray("galleryManager") instance=ExtResource("9_7jpji")]
+transform = Transform3D(1, 0, 0, 0, 0.8660254, 0.5, 0, -0.5, 0.8660254, 0, 0, 0)
+galleryManager = NodePath("../..")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1436391035]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.3171926)
